@@ -10,6 +10,7 @@ packages = [{include = "alien_invasion"}]
 python = "^3.10"
 black = "^23.1.0"
 flake8 = "^6.0.0"
+pygame = "2.3.0"
 
 
 [build-system]
