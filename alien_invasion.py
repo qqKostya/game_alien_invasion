@@ -1,9 +1,13 @@
 import sys
+from time import sleep
+
 import pygame
+
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
+from game_stats import GameStats
 
 
 class AlienInvasion:
@@ -18,6 +22,9 @@ class AlienInvasion:
             (self.settings.screen_width, self.settings.screen_height)
         )
         pygame.display.set_caption("Alien Invasion")
+
+        # Создание экземпляра для хранения игровой статистики.
+        self.stats = GameStats(self)
 
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
@@ -95,6 +102,29 @@ class AlienInvasion:
         self._check_fleet_edges()
         self.aliens.update()
 
+        # Проверка коллизий "пришелец - корабль"
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            self._ship_hit()
+
+        # Проверить добрались ли пришельцы до нижнего края экрана.
+        self._check_aliens_bottom()
+
+    def _ship_hit(self):
+        """Обрабатывает столкновение коробля с пришельцами."""
+        # Уменьшает ships_left.
+        self.stats.ships_left -= 1
+
+        # Очистка списка пришельцев и снарядов.
+        self.aliens.empty()
+        self.bullets.empty()
+
+        # Создание нового флота и размещение корабля по центру.
+        self._create_fleet()
+        self.ship.center_ship()
+
+        # Пауза.
+        sleep(0.5)
+
     def _create_fleet(self):
         """Создание флота вторжения."""
         # Создание пришельца и вычесление количества пришельце в ряду
@@ -137,6 +167,15 @@ class AlienInvasion:
         for alien in self.aliens.sprites():
             alien.rect.y += self.settings.fleet_drop_speed
         self.settings.fleet_direction *= -1
+
+    def _check_aliens_bottom(self):
+        """Проверяет, добрался ли пришелец до нижнего края экрана."""
+        screen_rect = self.screen.get_rect()
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= screen_rect.bottom:
+                # Происходит тоже, что при столкновении с кораблем
+                self._ship_hit()
+                break
 
     def _update_screen(self):
         """Обновляет ищображение на экране и отображает новый экран."""
