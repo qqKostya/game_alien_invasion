@@ -22,8 +22,7 @@ class Scoreboard:
     def prep_score(self):
         """Преобразует текущий счет в графическое изображение."""
         rounded_score = round(self.stats.score, -1)
-        score_str = "{:,}".format(rounded_score)
-        score_str = str(self.stats.score)
+        score_str = f"{rounded_score:,}"
         self.score_image = self.font.render(
             score_str, True, self.text_color, self.settings.bg_color
         )
@@ -31,7 +30,7 @@ class Scoreboard:
         # Вывод счета в прайо верхней части экрана.
         self.score_rect = self.score_image.get_rect()
         self.score_rect.right = self.screen_rect.right - 20
-        self.screen_rect.top = 20
+        self.score_rect.top = 20
 
     def prep_high_score(self):
         """Преобразует рекордный счет в графическое изображение."""
