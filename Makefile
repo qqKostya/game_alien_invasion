@@ -1,4 +1,4 @@
 format:  ## Lint and static-check
 	clear
 	black .
-	flake8
+	flake8 .
