@@ -46,6 +46,13 @@ class Scoreboard:
         self.high_score_rect.centerx = self.score_rect.centerx
         self.high_score_rect.top = self.score_rect.top
 
+    def check_high_score(self):
+        """Проверяет появился ли новый рекорд."""
+        if self.stats.score > self.stats.high_score:
+            self.stats.high_score = self.stats.score
+            self.prep_high_score()
+
     def show_score(self):
         """Выводит счет на экран."""
         self.screen.blit(self.score_image, self.score_rect)
+        self.screen.blit(self.high_score_img, self.high_score_rect)
